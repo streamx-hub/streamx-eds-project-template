@@ -1,0 +1,179 @@
+apiVersion: streamx.dev/v1alpha1
+kind: MeshFederation
+metadata:
+  name: sx
+  namespace: ${streamx.cloud.project-name}
+spec:
+  targets:
+    # byoe-edge-alicloud-beijing:
+    #   clusterRole: edge
+    #   matchClusterNames:
+    #     - byoe-edge-alicloud-beijing
+    #   overlay:
+    #     delivery:
+    #       search-engine:
+    #         ingress:
+    #           enabled: true
+    #           hosts:
+    #             - host: ${streamx.host.prefix}.alicloud-beijing.streamx.cloud
+    #               paths:
+    #                 - path: /search/*
+    #           tls:
+    #             - hosts:
+    #                 - >-
+    #                   ${streamx.host.prefix}.alicloud-beijing.streamx.cloud
+    #               secretName: wildcard-streamx-cloud.crt
+    #       web-server:
+    #         ingress:
+    #           enabled: true
+    #           hosts:
+    #             - host: ${streamx.host.prefix}.alicloud-beijing.streamx.cloud
+    #               paths:
+    #                 - path: /*
+    #                   servicePort: 8084
+    #           tls:
+    #             - hosts:
+    #                 - >-
+    #                   ${streamx.host.prefix}.alicloud-beijing.streamx.cloud
+    #               secretName: wildcard-streamx-cloud.crt
+    #   priority: 10
+    edge-ap-southeast-1:
+      clusterRole: edge
+      matchClusterNames:
+        - edge-ap-southeast-1
+      overlay:
+        delivery:
+          search-engine:
+            ingress:
+              enabled: true
+              hosts:
+                - host: ${streamx.host.prefix}.edge-ap-southeast-1.streamx.cloud
+                  paths:
+                    - path: /search/*
+              tls:
+                - hosts:
+                    - ${streamx.host.prefix}.edge-ap-southeast-1.streamx.cloud
+                  secretName: wildcard-streamx-cloud.crt
+          web-server:
+            ingress:
+              enabled: true
+              hosts:
+                - host: ${streamx.host.prefix}.edge-ap-southeast-1.streamx.cloud
+                  paths:
+                    - path: /*
+                      servicePort: 8084
+              tls:
+                - hosts:
+                    - ${streamx.host.prefix}.edge-ap-southeast-1.streamx.cloud
+                  secretName: wildcard-streamx-cloud.crt
+      priority: 10
+    edge-eu-central-1:
+      clusterRole: edge
+      matchClusterNames:
+        - edge-eu-central-1
+      overlay:
+        delivery:
+          search-engine:
+            ingress:
+              enabled: true
+              hosts:
+                - host: ${streamx.host.prefix}.edge-eu-central-1.streamx.cloud
+                  paths:
+                    - path: /search/*
+              tls:
+                - hosts:
+                    - ${streamx.host.prefix}.edge-eu-central-1.streamx.cloud
+                  secretName: wildcard-streamx-cloud.crt
+          web-server:
+            ingress:
+              enabled: true
+              hosts:
+                - host: ${streamx.host.prefix}.edge-eu-central-1.streamx.cloud
+                  paths:
+                    - path: /*
+                      servicePort: 8084
+              tls:
+                - hosts:
+                    - ${streamx.host.prefix}.edge-eu-central-1.streamx.cloud
+                  secretName: wildcard-streamx-cloud.crt
+      priority: 10
+    edge-us-east-1:
+      clusterRole: edge
+      matchClusterNames:
+        - edge-us-east-1
+      overlay:
+        delivery:
+          search-engine:
+            ingress:
+              enabled: true
+              hosts:
+                - host: ${streamx.host.prefix}.edge-us-east-1.streamx.cloud
+                  paths:
+                    - path: /search/*
+              tls:
+                - hosts:
+                    - ${streamx.host.prefix}.edge-us-east-1.streamx.cloud
+                  secretName: wildcard-streamx-cloud.crt
+          web-server:
+            ingress:
+              enabled: true
+              hosts:
+                - host: ${streamx.host.prefix}.edge-us-east-1.streamx.cloud
+                  paths:
+                    - path: /*
+                      servicePort: 8084
+              tls:
+                - hosts:
+                    - ${streamx.host.prefix}.edge-us-east-1.streamx.cloud
+                  secretName: wildcard-streamx-cloud.crt
+      priority: 10
+    edge-us-west-1:
+      clusterRole: edge
+      matchClusterNames:
+        - edge-us-west-1
+      overlay:
+        delivery:
+          search-engine:
+            ingress:
+              enabled: true
+              hosts:
+                - host: ${streamx.host.prefix}.edge-us-west-1.streamx.cloud
+                  paths:
+                    - path: /search/*
+              tls:
+                - hosts:
+                    - ${streamx.host.prefix}.edge-us-west-1.streamx.cloud
+                  secretName: wildcard-streamx-cloud.crt
+          web-server:
+            ingress:
+              enabled: true
+              hosts:
+                - host: ${streamx.host.prefix}.edge-us-west-1.streamx.cloud
+                  paths:
+                    - path: /*
+                      servicePort: 8084
+              tls:
+                - hosts:
+                    - ${streamx.host.prefix}.edge-us-west-1.streamx.cloud
+                  secretName: wildcard-streamx-cloud.crt
+      priority: 10
+    processing-eu-central-1:
+      clusterRole: processing
+      matchClusterNames:
+        - processing-eu-central-1
+      overlay:
+        ingestion:
+          rest-ingestion:
+            ingress:
+              enabled: true
+              hosts:
+                - host: >-
+                    ${streamx.ingestion.url}
+                  paths:
+                    - path: /*
+              tls:
+                - hosts:
+                    - >-
+                      ${streamx.ingestion.url}
+                  secretName: wildcard-streamx-cloud.crt
+      priority: 10
