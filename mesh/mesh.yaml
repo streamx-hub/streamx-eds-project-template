@@ -73,6 +73,9 @@ processing:
         topic: outboxes/web-resources
       outgoing-assets:
         topic: outboxes/assets
+    environmentFrom:
+      configs:
+        - "pages-dependencies-rewriter.properties"
     environment:
       STREAMX_BLUEPRINTS_EXTERNAL_RESOURCES_PROCESSING_SERVICE_PROCESSABLE_SX_TYPES: "page/blog,page/blog/external"
       STREAMX_BLUEPRINTS_EXTERNAL_RESOURCES_PROCESSING_SERVICE_HTML_EXTERNAL_RESOURCE_XPATH_SELECTORS: "//img/@src,//link[@rel='stylesheet']/@href,//script/@src,//picture/source/@srcset,//meta[@property='og:image' or @name='twitter:image']/@content"
@@ -92,6 +95,9 @@ processing:
         topic: outboxes/web-resources
       outgoing-assets:
         topic: outboxes/assets
+    environmentFrom:
+      configs:
+        - "web-resources-dependencies-rewriter.properties"
     environment:
       STREAMX_BLUEPRINTS_EXTERNAL_RESOURCES_PROCESSING_SERVICE_PROCESSABLE_SX_TYPES: "web-resource/static"
       STREAMX_BLUEPRINTS_EXTERNAL_RESOURCES_PROCESSING_SERVICE_HTML_EXTERNAL_RESOURCE_XPATH_SELECTORS: "//img/@src,//picture/source/@srcset"
@@ -133,6 +139,9 @@ processing:
     outgoing:
       fetched-resources:
         topic: relays/web-resources
+    environmentFrom:
+      configs:
+        - "eds-index-fetcher.properties"
     environment:
       STREAMX_BLUEPRINTS_SCHEDULED-RESOURCE-PROCESSING-SERVICE_FETCHER: "eds"
       STREAMX_BLUEPRINTS_SCHEDULED-RESOURCE-PROCESSING-SERVICE_EDS_RESOURCE_NAME_PATTERN: "helix-query.yaml"
