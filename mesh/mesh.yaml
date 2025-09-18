@@ -115,17 +115,6 @@ processing:
       STREAMX_BLUEPRINTS_SITEMAP-GENERATOR-PROCESSING-SERVICE_OUTPUT-KEY: "/sitemap.xml"
       STREAMX_BLUEPRINTS_SITEMAP-GENERATOR-PROCESSING-SERVICE_OUTPUT-TYPE: "web-resource/sitemap"
 
-  indexable-resources-producer:
-    image: indexables-producer-processing-service
-    environment:
-      STREAMX_BLUEPRINTS_INDEXABLES_PRODUCER_PROCESSING_SERVICE_INDEX_FRAGMENTS: "false"
-    incoming:
-      pages:
-        topic: relays/isolated-pages
-    outgoing:
-      indexable-resources:
-        topic: outboxes/indexable-resources
-
   eds-index-fetcher:
     image: scheduled-resource-processing-service
     incoming:
@@ -141,36 +130,6 @@ processing:
       STREAMX_BLUEPRINTS_SCHEDULED-RESOURCE-PROCESSING-SERVICE_OUTPUT_TYPE: "web-resource/static"
 
 delivery:
-  search-engine:
-    image: opensearch-delivery-service
-    incoming:
-      indexable-resources:
-        topic: outboxes/indexable-resources
-    port: 8082
-    volumesFrom:
-      configs:
-        - "opensearch/service-init:/deployments/opensearch/service-init"
-    environment:
-      QUARKUS_ELASTICSEARCH_USERNAME: "admin"
-      QUARKUS_ELASTICSEARCH_HOSTS: "search-engine.opensearch:9201"
-      STREAMX_BLUEPRINTS_OPENSEARCH-DELIVERY-SERVICE_MIGRATION-SCRIPT-LOCATIONS: "classpath:opensearch/service-init,file:opensearch/service-init"
-      STREAMX_BLUEPRINTS_OPENSEARCH-DELIVERY-SERVICE_TYPE-REQUIRED: "false"
-    environmentFrom:
-      secrets:
-        - "opensearch-secrets.properties"
-    components:
-      opensearch:
-        image: "registry.streamx.cloud/streamx-docker-hub-public-proxy/opensearchproject/opensearch:2.16.0"
-        ports:
-          - 9201:9201
-        environment:
-          network.host: "0.0.0.0"
-          http.port: "9201"
-          discovery.type: "single-node"
-          DISABLE_SECURITY_PLUGIN: "true"
-        environmentFrom:
-          secrets:
-            - "opensearch-component-secrets.properties"
   web-server:
     image: web-delivery-service
     incoming:
