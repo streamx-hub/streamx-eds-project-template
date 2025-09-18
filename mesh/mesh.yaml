@@ -73,10 +73,8 @@ processing:
         topic: outboxes/web-resources
       outgoing-assets:
         topic: outboxes/assets
-    environmentFrom:
-      configs:
-        - "pages-dependencies-rewriter.properties"
     environment:
+      STREAMX_BLUEPRINTS_EXTERNAL_RESOURCES_PROCESSING_SERVICE_BASE_URL_FOR_RELATIVE_PATHS: "${streamx.eds-root.url}"
       STREAMX_BLUEPRINTS_EXTERNAL_RESOURCES_PROCESSING_SERVICE_PROCESSABLE_SX_TYPES: "page/blog,page/blog/external"
       STREAMX_BLUEPRINTS_EXTERNAL_RESOURCES_PROCESSING_SERVICE_HTML_EXTERNAL_RESOURCE_XPATH_SELECTORS: "//img/@src,//link[@rel='stylesheet']/@href,//script/@src,//picture/source/@srcset,//meta[@property='og:image' or @name='twitter:image']/@content"
       STREAMX_BLUEPRINTS_EXTERNAL_RESOURCES_PROCESSING_SERVICE_HTML_EXTERNAL_RESOURCE_URL_EXCLUSIONS_PATTERN: ".*(/blocks/|/fonts/|/icons/|/scripts/|/styles/|helix-query\\.yaml|blog\\.json|index\\.json).*"
@@ -95,10 +93,8 @@ processing:
         topic: outboxes/web-resources
       outgoing-assets:
         topic: outboxes/assets
-    environmentFrom:
-      configs:
-        - "web-resources-dependencies-rewriter.properties"
     environment:
+      STREAMX_BLUEPRINTS_EXTERNAL_RESOURCES_PROCESSING_SERVICE_BASE_URL_FOR_RELATIVE_PATHS: "${streamx.eds-root.url}"
       STREAMX_BLUEPRINTS_EXTERNAL_RESOURCES_PROCESSING_SERVICE_PROCESSABLE_SX_TYPES: "web-resource/static"
       STREAMX_BLUEPRINTS_EXTERNAL_RESOURCES_PROCESSING_SERVICE_HTML_EXTERNAL_RESOURCE_XPATH_SELECTORS: "//img/@src,//picture/source/@srcset"
       STREAMX_BLUEPRINTS_EXTERNAL_RESOURCES_PROCESSING_SERVICE_XML_EXTERNAL_RESOURCE_XPATH_SELECTORS: "/*[local-name()='urlset']/*[local-name()='url']/*[local-name()='loc']"
@@ -138,11 +134,9 @@ processing:
     outgoing:
       fetched-resources:
         topic: relays/web-resources
-    environmentFrom:
-      configs:
-        - "eds-index-fetcher.properties"
     environment:
       STREAMX_BLUEPRINTS_SCHEDULED-RESOURCE-PROCESSING-SERVICE_FETCHER: "eds"
+      STREAMX_BLUEPRINTS_SCHEDULED-RESOURCE-PROCESSING-SERVICE_EDS_ENDPOINT_URL: "${streamx.eds-root.url}"
       STREAMX_BLUEPRINTS_SCHEDULED-RESOURCE-PROCESSING-SERVICE_EDS_RESOURCE_NAME_PATTERN: "helix-query.yaml"
       STREAMX_BLUEPRINTS_SCHEDULED-RESOURCE-PROCESSING-SERVICE_OUTPUT_TYPE: "web-resource/static"
 
