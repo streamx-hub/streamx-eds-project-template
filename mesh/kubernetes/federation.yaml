@@ -11,18 +11,6 @@ spec:
     #     - byoe-edge-alicloud-beijing
     #   overlay:
     #     delivery:
-    #       search-engine:
-    #         ingress:
-    #           enabled: true
-    #           hosts:
-    #             - host: ${streamx.host.prefix}.alicloud-beijing.streamx.cloud
-    #               paths:
-    #                 - path: /search/*
-    #           tls:
-    #             - hosts:
-    #                 - >-
-    #                   ${streamx.host.prefix}.alicloud-beijing.streamx.cloud
-    #               secretName: wildcard-streamx-cloud.crt
     #       web-server:
     #         ingress:
     #           enabled: true
@@ -43,17 +31,6 @@ spec:
         - edge-ap-southeast-1
       overlay:
         delivery:
-          search-engine:
-            ingress:
-              enabled: true
-              hosts:
-                - host: ${streamx.host.prefix}.edge-ap-southeast-1.streamx.cloud
-                  paths:
-                    - path: /search/*
-              tls:
-                - hosts:
-                    - ${streamx.host.prefix}.edge-ap-southeast-1.streamx.cloud
-                  secretName: wildcard-streamx-cloud.crt
           web-server:
             ingress:
               enabled: true
@@ -73,17 +50,6 @@ spec:
         - edge-eu-central-1
       overlay:
         delivery:
-          search-engine:
-            ingress:
-              enabled: true
-              hosts:
-                - host: ${streamx.host.prefix}.edge-eu-central-1.streamx.cloud
-                  paths:
-                    - path: /search/*
-              tls:
-                - hosts:
-                    - ${streamx.host.prefix}.edge-eu-central-1.streamx.cloud
-                  secretName: wildcard-streamx-cloud.crt
           web-server:
             ingress:
               enabled: true
@@ -103,17 +69,6 @@ spec:
         - edge-us-east-1
       overlay:
         delivery:
-          search-engine:
-            ingress:
-              enabled: true
-              hosts:
-                - host: ${streamx.host.prefix}.edge-us-east-1.streamx.cloud
-                  paths:
-                    - path: /search/*
-              tls:
-                - hosts:
-                    - ${streamx.host.prefix}.edge-us-east-1.streamx.cloud
-                  secretName: wildcard-streamx-cloud.crt
           web-server:
             ingress:
               enabled: true
@@ -133,17 +88,6 @@ spec:
         - edge-us-west-1
       overlay:
         delivery:
-          search-engine:
-            ingress:
-              enabled: true
-              hosts:
-                - host: ${streamx.host.prefix}.edge-us-west-1.streamx.cloud
-                  paths:
-                    - path: /search/*
-              tls:
-                - hosts:
-                    - ${streamx.host.prefix}.edge-us-west-1.streamx.cloud
-                  secretName: wildcard-streamx-cloud.crt
           web-server:
             ingress:
               enabled: true
