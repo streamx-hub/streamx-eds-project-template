@@ -51,7 +51,4 @@ auth/*
 /repository
 */repository
 
-# Ignore trusted cers symlinks
-/gateway/tls/*
-
 /mesh/auth/*
