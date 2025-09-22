@@ -10,6 +10,7 @@ defaults:
       enabled: true
       minAvailable: 1
   processing:
+    stateful: true
     replicas: ${streamx.default.processing.replicas}
   delivery:
     replicas: ${streamx.default.delivery.replicas}
@@ -81,6 +82,7 @@ processing:
 
 delivery:
   web-server:
+    stateful: true
     volumes:
       repository-volume:
         size: 10Gi
