@@ -33,9 +33,60 @@ ingestion:
         - hosts:
             - ${streamx.eds-template.ingestion.host}
 
+processing:
+
+  web-resources-relay:
+    volumes:
+      rocksdb:
+        mountPath: "${streamx.rocksdb.path}"
+        size: 5Gi
+
+  pages-relay:
+    volumes:
+      rocksdb:
+        mountPath: "${streamx.rocksdb.path}"
+        size: 5Gi
+
+  isolated-pages-relay:
+    volumes:
+      rocksdb:
+        mountPath: "${streamx.rocksdb.path}"
+        size: 5Gi
+
+  pages-deps-rewriter:
+    volumes:
+      rocksdb:
+        mountPath: "${streamx.rocksdb.path}"
+        size: 5Gi
+
+  web-resources-deps-rewriter:
+    volumes:
+      rocksdb:
+        mountPath: "${streamx.rocksdb.path}"
+        size: 5Gi
+
+  sitemap-generator:
+    volumes:
+      rocksdb:
+        mountPath: "${streamx.rocksdb.path}"
+        size: 5Gi
+
+  eds-index-fetcher:
+    replicas: 1
+    volumes:
+      rocksdb:
+        mountPath: "${streamx.rocksdb.path}"
+        size: 5Gi
+
+
 delivery:
   web-server:
-    stateful: false
+    volumes:
+      repository-volume:
+        size: 10Gi
+      rocksdb:
+        mountPath: "${streamx.rocksdb.path}"
+        size: 5Gi
     ingress:
       enabled: true
       hosts:

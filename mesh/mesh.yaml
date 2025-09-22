@@ -61,11 +61,15 @@ processing:
       MP_MESSAGING_INCOMING_MESSAGES_SCHEMA: "page-schema"
       MP_MESSAGING_OUTGOING_RELAYED-MESSAGES_SCHEMA: "page-schema"
 
-  pages-dependencies-rewriter:
+  pages-deps-rewriter:
     image: external-resources-processing-service
     incoming:
       incoming-pages:
         topic: relays/pages
+      incoming-data:
+        topic: relays/fake-data-channel
+      incoming-web-resources:
+        topic: relays/fake-web-resources
     outgoing:
       outgoing-pages:
         topic: relays/isolated-pages
@@ -73,6 +77,8 @@ processing:
         topic: outboxes/web-resources
       outgoing-assets:
         topic: outboxes/assets
+      outgoing-data:
+        topic: relays/fake-data-channel
     environment:
       STREAMX_BLUEPRINTS_EXTERNAL_RESOURCES_PROCESSING_SERVICE_BASE_URL_FOR_RELATIVE_PATHS: "${streamx.eds-base.url}"
       STREAMX_BLUEPRINTS_EXTERNAL_RESOURCES_PROCESSING_SERVICE_PROCESSABLE_SX_TYPES: "page/blog,page/blog/external"
@@ -81,11 +87,15 @@ processing:
       STREAMX_BLUEPRINTS_EXTERNAL_RESOURCES_PROCESSING_SERVICE_EXTERNAL_PAGE_PUBLISH_SX_TYPE: "page/blog/external"
       STREAMX_BLUEPRINTS_EXTERNAL_RESOURCES_PROCESSING_SERVICE_EXTERNAL_WEB_RESOURCE_PUBLISH_SX_TYPE: "web-resource/static/external"
 
-  web-resources-dependencies-rewriter:
+  web-resources-deps-rewriter:
     image: external-resources-processing-service
     incoming:
       incoming-web-resources:
         topic: relays/web-resources
+      incoming-pages:
+        topic: relays/fake-pages-channel
+      incoming-data:
+        topic: relays/fake-data-channel
     outgoing:
       outgoing-pages:
         topic: relays/pages
@@ -93,6 +103,8 @@ processing:
         topic: outboxes/web-resources
       outgoing-assets:
         topic: outboxes/assets
+      outgoing-data:
+        topic: relays/fake-data-channel
     environment:
       STREAMX_BLUEPRINTS_EXTERNAL_RESOURCES_PROCESSING_SERVICE_BASE_URL_FOR_RELATIVE_PATHS: "${streamx.eds-base.url}"
       STREAMX_BLUEPRINTS_EXTERNAL_RESOURCES_PROCESSING_SERVICE_PROCESSABLE_SX_TYPES: "web-resource/static"
@@ -139,6 +151,8 @@ delivery:
         topic: outboxes/assets
       web-resources:
         topic: outboxes/web-resources
+      fragments:
+        topic: outboxes/fragments
     environment:
       STREAMX_BLUEPRINTS_WEB-DELIVERY-SERVICE_RESOURCES_DIRECTORY: "/srv/www"
       STREAMX_URL-INCLUDE-REPLACEMENT-PROVIDER_SSI-INCLUDE-FALLBACK-CONTENT: "<!-- Include Not Found -->"
