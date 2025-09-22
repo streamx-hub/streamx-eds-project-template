@@ -1,0 +1,143 @@
+defaults:
+  global:
+    resources:
+      requests:
+        cpu: 300m
+        memory: 512Mi
+  ingestion:
+    replicas: ${streamx.default.ingestion.replicas}
+    podDisruptionBudget:
+      enabled: true
+      minAvailable: 1
+  processing:
+    replicas: ${streamx.default.processing.replicas}
+  delivery:
+    replicas: ${streamx.default.delivery.replicas}
+    podDisruptionBudget:
+      enabled: true
+      minAvailable: 1
+
+processing:
+  blueprint-scheduled-eds-index:
+    replicas: 1
+
+ingestion:
+  rest-ingestion:
+    ingress:
+      enabled: true
+      hosts:
+        - host: ${streamx.eds-template.ingestion.host}
+          paths:
+            - path: /*
+      tls:
+        - hosts:
+            - ${streamx.eds-template.ingestion.host}
+
+processing:
+
+  web-resources-relay:
+    volumes:
+      rocksdb:
+        mountPath: "${streamx.rocksdb.path}"
+        size: 5Gi
+
+  pages-relay:
+    volumes:
+      rocksdb:
+        mountPath: "${streamx.rocksdb.path}"
+        size: 5Gi
+
+  isolated-pages-relay:
+    volumes:
+      rocksdb:
+        mountPath: "${streamx.rocksdb.path}"
+        size: 5Gi
+
+  pages-deps-rewriter:
+    volumes:
+      rocksdb:
+        mountPath: "${streamx.rocksdb.path}"
+        size: 5Gi
+
+  web-resources-deps-rewriter:
+    volumes:
+      rocksdb:
+        mountPath: "${streamx.rocksdb.path}"
+        size: 5Gi
+
+  sitemap-generator:
+    volumes:
+      rocksdb:
+        mountPath: "${streamx.rocksdb.path}"
+        size: 5Gi
+
+  eds-index-fetcher:
+    replicas: 1
+    volumes:
+      rocksdb:
+        mountPath: "${streamx.rocksdb.path}"
+        size: 5Gi
+
+
+delivery:
+  web-server:
+    volumes:
+      repository-volume:
+        size: 10Gi
+      rocksdb:
+        mountPath: "${streamx.rocksdb.path}"
+        size: 5Gi
+    ingress:
+      enabled: true
+      hosts:
+        - host: ${streamx.eds-template.web.host}
+          paths:
+            - servicePort: 8084
+              path: /*
+      tls:
+        - hosts:
+            - ${streamx.eds-template.web.host}
+          secretName: wildcard-streamx-cloud.crt
+    probes:
+      startup:
+        httpGet:
+          path: /q/health
+          port: 8080
+        initialDelaySeconds: 10
+        timeoutSeconds: 2
+        periodSeconds: 10
+        successThreshold: 1
+        failureThreshold: 120
+    components:
+      webserver:
+        probes:
+          readiness:
+            httpGet:
+              path: /health
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 0
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          liveness:
+            httpGet:
+              path: /health
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 0
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+          startup:
+            httpGet:
+              path: /health
+              port: 80
+              scheme: HTTP
+            initialDelaySeconds: 0
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
