@@ -4,36 +4,6 @@ metadata:
   name: sx
 spec:
   targets:
-    byoc-ds-edge-alicloud-beijing:
-      clusterRole: edge
-      matchClusterNames:
-        - byoc-ds-edge-alicloud-beijing
-      overlay:
-        defaults:
-          delivery:
-            storageClassName: "alicloud-disk-efficiency"
-        delivery:
-          blueprint-web:
-            volumes:
-              repository-volume:
-                mountPath: "${streamx.rocksdb.path}"
-                size: 20Gi
-              rocksdb:
-                mountPath: "${streamx.rocksdb.path}"
-                size: 20Gi
-            ingress:
-              enabled: true
-              hosts:
-                - host: ${streamx.host.prefix}.byoc-ds-edge-alicloud-beijing.streamx.cloud
-                  paths:
-                    - path: /*
-                      servicePort: 8084
-              tls:
-                - hosts:
-                    - >-
-                      ${streamx.host.prefix}.byoc-ds-edge-alicloud-beijing.streamx.cloud
-                  secretName: wildcard-streamx-cloud.crt
-      priority: 10
     edge-ap-southeast-1:
       clusterRole: edge
       matchClusterNames:
