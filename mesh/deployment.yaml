@@ -10,6 +10,7 @@ defaults:
       enabled: true
       minAvailable: 1
   processing:
+    stateful: true
     replicas: ${streamx.default.processing.replicas}
   delivery:
     replicas: ${streamx.default.delivery.replicas}
