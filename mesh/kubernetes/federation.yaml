@@ -2,7 +2,6 @@ apiVersion: streamx.dev/v1alpha1
 kind: MeshFederation
 metadata:
   name: sx
-  namespace: ${streamx.cloud.project-id}
 spec:
   targets:
     byoc-ds-edge-alicloud-beijing:

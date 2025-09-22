@@ -81,6 +81,7 @@ processing:
 
 delivery:
   web-server:
+    stateful: true
     volumes:
       repository-volume:
         size: 10Gi
