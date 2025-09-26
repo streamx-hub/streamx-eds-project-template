@@ -18,10 +18,6 @@ defaults:
       enabled: true
       minAvailable: 1
 
-processing:
-  blueprint-scheduled-eds-index:
-    replicas: 1
-
 ingestion:
   rest-ingestion:
     ingress:

@@ -8,3 +8,7 @@ The placeholders are marked with `<REQUIRED_VALUE>` token.
 
  - `streamx.cloud.project-id` - Your StreamX Cloud project ID
  - `streamx.eds-base.url` - The base URL of the EDS site, used by the mesh services to retrieve resources
+
+## GitHub Workflows
+
+For details, see the workflows [`README.md`](.github/workflows/README.md)  file.
