@@ -204,28 +204,6 @@ processing:
           relayed-events:
             ref: relay.web-resources
 
-  pages-relay:
-    descriptor: relay
-    containers:
-      service:
-        incoming:
-          events:
-            ref: inbox.pages
-        outgoing:
-          relayed-events:
-            ref: relay.pages
-
-  isolated-pages-relay:
-    descriptor: relay
-    containers:
-      service:
-        incoming:
-          events:
-            ref: relay.isolated-pages
-        outgoing:
-          relayed-events:
-            ref: outbox.pages
-
   download-requests-relay:
     descriptor: relay
     containers:
@@ -243,10 +221,10 @@ processing:
       processor:
         incoming:
           incoming-resources:
-            ref: relay.pages
+            ref: inbox.pages
         outgoing:
           outgoing-resources:
-            ref: relay.isolated-pages
+            ref: outbox.pages
           download-requests:
             ref: relay.download-requests
         environmentFrom:
@@ -331,7 +309,7 @@ edge:
       sink:
         incoming:
           resources:
-            ref: outbox.pages,outbox.fragments,outbox.assets,outbox.web-resources
+            ref: outbox.pages,outbox.assets,outbox.web-resources
         environmentFrom:
           configs:
             - web-server-sink.properties
