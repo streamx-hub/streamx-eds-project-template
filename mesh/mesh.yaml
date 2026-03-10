@@ -193,16 +193,6 @@ processing:
           relayed-events:
             ref: outbox.assets
 
-  web-resources-relay:
-    descriptor: relay
-    containers:
-      service:
-        incoming:
-          events:
-            ref: inbox.web-resources
-        outgoing:
-          relayed-events:
-            ref: relay.web-resources
 
   download-requests-relay:
     descriptor: relay
@@ -237,7 +227,7 @@ processing:
       processor:
         incoming:
           incoming-resources:
-            ref: relay.web-resources
+            ref: inbox.web-resources
         outgoing:
           outgoing-resources:
             ref: outbox.web-resources
