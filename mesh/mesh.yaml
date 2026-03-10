@@ -15,35 +15,6 @@ descriptors:
         outgoing:
           relayed-events: {}
 
-  optimized-images-generator:
-    type: processing
-    containers:
-      processor:
-        image: ghcr.io/streamx-com/streamx-blueprints/optimized-images-generator:3.0.11-native
-        incoming:
-          incoming-assets: {}
-        outgoing:
-          optimized-assets: {}
-
-  local-references-rewriter:
-    type: processing
-    volumes:
-      rocksdb:
-        size: 5Gi
-    containers:
-      processor:
-        image: ghcr.io/streamx-com/streamx-blueprints/local-references-rewriter:3.0.11-native
-        incoming:
-          incoming-pages: {}
-          optimized-assets:
-            shared: false
-            initState: replay
-            enforceMonotonicEventTime: true
-        outgoing:
-          adjusted-pages: {}
-        volumes:
-          - rocksdb:/var/lib/rocksdb
-
   external-references-rewriter:
     type: processing
     containers:
@@ -69,136 +40,6 @@ descriptors:
           downloaded-pages: {}
           downloaded-assets: {}
           downloaded-web-resources: {}
-        volumes:
-          - rocksdb:/var/lib/rocksdb
-
-  json-aggregator:
-    type: processing
-    volumes:
-      rocksdb:
-        size: 5Gi
-    containers:
-      processor:
-        image: ghcr.io/streamx-com/streamx-blueprints/json-aggregator:3.0.11-native
-        incoming:
-          data: {}
-          multivalued-data: {}
-        outgoing:
-          aggregated-data: {}
-          aggregated-multivalued-data: {}
-        autoRef:
-          - from: data
-            to: data-state
-            using: sync-state
-          - from: multivalued-data
-            to: multivalued-data-state
-            using: sync-state
-        volumes:
-          - rocksdb:/var/lib/rocksdb
-
-  event-converter:
-    type: processing
-    containers:
-      processor:
-        image: ghcr.io/streamx-com/streamx-blueprints/event-converter:3.0.11-native
-        incoming:
-          resources: {}
-        outgoing:
-          indexable-resources: {}
-
-  rendering-engine:
-    type: processing
-    volumes:
-      rocksdb:
-        size: 5Gi
-    containers:
-      processor:
-        image: ghcr.io/streamx-com/streamx-blueprints/rendering-engine:3.0.11-native
-        incoming:
-          data: {}
-          renderers: {}
-          rendering-contexts: {}
-        outgoing:
-          pages: {}
-          fragments: {}
-        autoRef:
-          - from: outgoing-rendering-requests
-            to: incoming-rendering-requests
-            using: internal-relay
-          - from: data
-            to: data-state
-            using: sync-state
-          - from: renderers
-            to: renderers-state
-            using: sync-state
-          - from: rendering-contexts
-            to: rendering-contexts-state
-            using: sync-state
-        volumes:
-          - rocksdb:/var/lib/rocksdb
-
-  composition-engine:
-    type: processing
-    volumes:
-      rocksdb:
-        size: 5Gi
-    containers:
-      processor:
-        image: ghcr.io/streamx-com/streamx-blueprints/composition-engine:3.0.11-native
-        incoming:
-          layouts: {}
-          compositions: {}
-        outgoing:
-          pages: {}
-        autoRef:
-          - from: outgoing-page-compose-requests
-            to: incoming-page-compose-requests
-            using: internal-relay
-          - from: layouts
-            to: layouts-state
-            using: sync-state
-          - from: compositions
-            to: compositions-state
-            using: sync-state
-        volumes:
-          - rocksdb:/var/lib/rocksdb
-
-  data-collector:
-    type: processing
-    volumes:
-      rocksdb:
-        size: 5Gi
-    containers:
-      processor:
-        image: ghcr.io/streamx-com/streamx-blueprints/data-collector:3.0.11-native
-        incoming:
-          data: {}
-        outgoing:
-          collected-data: {}
-          web-resources: {}
-        autoRef:
-          - from: data
-            to: data-state
-            using: sync-state
-        volumes:
-          - rocksdb:/var/lib/rocksdb
-
-  sitemap-generator:
-    type: processing
-    volumes:
-      rocksdb:
-        size: 5Gi
-    containers:
-      processor:
-        image: ghcr.io/streamx-com/streamx-blueprints/sitemap-generator:3.0.11-native
-        incoming:
-          incoming-pages: {}
-        outgoing:
-          outgoing-sitemaps: {}
-        autoRef:
-          - from: incoming-pages
-            to: incoming-pages-state
-            using: sync-state
         volumes:
           - rocksdb:/var/lib/rocksdb
 
@@ -336,6 +177,18 @@ ingestion:
           STREAMX_SOURCES_EDS_ACCEPT_IAT_FROM: "1704067200"
 
 processing:
+
+  assets-relay:
+    descriptor: relay
+    containers:
+      service:
+        incoming:
+          events:
+            ref: relay.assets
+        outgoing:
+          relayed-events:
+            ref: outbox.assets
+
   web-resources-relay:
     descriptor: relay
     containers:
@@ -423,7 +276,7 @@ processing:
           downloaded-pages:
             ref: inbox.pages
           downloaded-assets:
-            ref: inbox.assets
+            ref: relay.assets
           downloaded-web-resources:
             ref: inbox.web-resources
 
