@@ -166,6 +166,10 @@ sources:
         produces:
           - com.streamx.blueprints.web-resource.published.v1
           - com.streamx.blueprints.web-resource.unpublished.v1
+      - ref: inbox.assets
+        produces:
+          - com.streamx.blueprints.asset.published.v1
+          - com.streamx.blueprints.asset.unpublished.v1
 
 ingestion:
   rest-ingestion:
@@ -184,7 +188,7 @@ processing:
       service:
         incoming:
           events:
-            ref: relay.assets
+            ref: inbox.assets
         outgoing:
           relayed-events:
             ref: outbox.assets
@@ -276,7 +280,7 @@ processing:
           downloaded-pages:
             ref: inbox.pages
           downloaded-assets:
-            ref: relay.assets
+            ref: inbox.assets
           downloaded-web-resources:
             ref: inbox.web-resources
 
