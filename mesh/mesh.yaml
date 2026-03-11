@@ -113,33 +113,33 @@ descriptors:
           - 8084:80
         volumes:
           - repository-volume:/usr/share/nginx/html
-
-httpRoutes:
-  ingestion-route:
-    rules:
-      - matches:
-          - path:
-              type: PathPrefix
-              value: /
-        backendRefs:
-          - name: ingestion/rest-ingestion
-            port: 8080
-  web-server-and-search-route:
-    rules:
-      - matches:
-          - path:
-              type: PathPrefix
-              value: /search
-        backendRefs:
-          - name: edge/opensearch-sink
-            port: 8082
-      - matches:
-          - path:
-              type: PathPrefix
-              value: /
-        backendRefs:
-          - name: edge/web-server-sink
-            port: 8084
+networking:
+  httpRoutes:
+    ingestion-route:
+      rules:
+        - matches:
+            - path:
+                type: PathPrefix
+                value: /
+          backendRefs:
+            - name: ingestion/rest-ingestion
+              port: 8080
+    web-server-and-search-route:
+      rules:
+        - matches:
+            - path:
+                type: PathPrefix
+                value: /search
+          backendRefs:
+            - name: edge/opensearch-sink
+              port: 8082
+        - matches:
+            - path:
+                type: PathPrefix
+                value: /
+          backendRefs:
+            - name: edge/web-server-sink
+              port: 8084
 
 sources:
   github:
