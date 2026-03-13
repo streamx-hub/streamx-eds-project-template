@@ -1,0 +1,90 @@
+name: StreamX Full Code Sync
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish-to-streamx:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare variables
+        id: vars
+        shell: bash
+        run: |
+          EDS_DOMAIN="${{ vars.EDS_DOMAIN_URL }}"
+          EDS_DOMAIN="${EDS_DOMAIN%/}"
+          echo "eds_domain=$EDS_DOMAIN" >> $GITHUB_OUTPUT
+
+      - name: Publish Full Sync
+        shell: bash
+        env:
+          INGESTION_URL: ${{ vars.STREAMX_INGESTION_URL }}
+          TOKEN: ${{ secrets.STREAMX_INGESTION_GH_TOKEN }}
+          INCLUDE_PATTERNS: ${{ vars.STREAMX_INGESTION_INCLUDES }}
+        run: |
+
+          publish () {
+            SUBJECT=$1
+            BASE64_CONTENT=$2
+            EVENT_TYPE=$3
+            CONTENT_TYPE=$4
+
+            MAX_RETRIES=5
+            RETRY_DELAY=2
+
+            for i in $(seq 1 $MAX_RETRIES); do
+              RESPONSE=$(curl --http1.1 \
+                --connect-timeout 10 --max-time 60 -s -w "%{http_code}" \
+                -X POST "${INGESTION_URL}/ingestion/v2/cloudevents" \
+                -H "Authorization: Bearer ${TOKEN}" \
+                -H "Content-Type: application/cloudevents+json" \
+                -d "{
+                  \"specversion\":\"1.0\",
+                  \"id\":\"$(uuidgen)\",
+                  \"source\":\"eds\",
+                  \"type\":\"${EVENT_TYPE}\",
+                  \"subject\":\"${SUBJECT}\",
+                  \"datacontenttype\":\"application/json\",
+                  \"sxsource\":\"eds\",
+                  \"data\":{
+                    \"content\":\"${BASE64_CONTENT}\",
+                    \"type\":\"${CONTENT_TYPE}\"
+                  }
+                }" || echo "000")
+
+              STATUS=${RESPONSE: -3}
+
+              if [[ "$STATUS" == "200" || "$STATUS" == "202" ]]; then
+                echo "✅ Ingested ($STATUS) subject=$SUBJECT"
+                return
+              fi
+
+              echo "⚠️ Attempt $i failed ($STATUS) subject=$SUBJECT"
+              sleep $RETRY_DELAY
+            done
+
+            echo "❌ Failed subject=$SUBJECT"
+          }
+
+          echo "Running full sync..."
+
+          FILES=$(echo "$INCLUDE_PATTERNS" | jq -r '.[]' | xargs git ls-files)
+
+          for file in $FILES; do
+            SUBJECT="/$file"
+            BASE64_CONTENT=$(base64 "$file" | tr -d '\n')
+
+            CONTENT_TYPE="web-resource/static"
+            EVENT_TYPE="com.streamx.blueprints.web-resource.published.v1"
+
+            if [[ "$file" == *.md ]]; then
+              CONTENT_TYPE="page/eds"
+              EVENT_TYPE="com.streamx.blueprints.page.published.v1"
+            fi
+
+            publish "$SUBJECT" "$BASE64_CONTENT" "$EVENT_TYPE" "$CONTENT_TYPE"
+          done

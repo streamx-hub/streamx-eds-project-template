@@ -1,0 +1,86 @@
+name: StreamX EDS Publish Sync
+
+on:
+  repository_dispatch:
+    types:
+      - resource-published
+
+jobs:
+  publish-to-streamx:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Prepare variables
+        id: vars
+        shell: bash
+        run: |
+
+          EDS_DOMAIN="${{ vars.EDS_DOMAIN_URL }}"
+          EDS_DOMAIN="${EDS_DOMAIN%/}"
+          echo "eds_domain=$EDS_DOMAIN" >> $GITHUB_OUTPUT
+
+          path="${{ github.event.client_payload.path }}"
+          streamx_key=$(echo "$path" | sed 's/\.md$//')
+          page_path=$(echo "$streamx_key" | sed 's/index//')
+
+          echo "path=$path" >> $GITHUB_OUTPUT
+          echo "streamx_key=$streamx_key" >> $GITHUB_OUTPUT
+          echo "page_path=$page_path" >> $GITHUB_OUTPUT
+
+      - name: Publish
+        shell: bash
+        env:
+          INGESTION_URL: ${{ vars.STREAMX_INGESTION_URL }}
+          TOKEN: ${{ secrets.STREAMX_INGESTION_GH_TOKEN }}
+          EDS_DOMAIN: ${{ steps.vars.outputs.eds_domain }}
+        run: |
+
+          publish () {
+            SUBJECT=$1
+            BASE64_CONTENT=$2
+            EVENT_TYPE=$3
+            CONTENT_TYPE=$4
+
+            RESPONSE=$(curl --http1.1 \
+              --connect-timeout 10 --max-time 60 -s -w "%{http_code}" \
+              -X POST "${INGESTION_URL}/ingestion/v2/cloudevents" \
+              -H "Authorization: Bearer ${TOKEN}" \
+              -H "Content-Type: application/cloudevents+json" \
+              -d "{
+                \"specversion\":\"1.0\",
+                \"id\":\"$(uuidgen)\",
+                \"source\":\"eds\",
+                \"type\":\"${EVENT_TYPE}\",
+                \"subject\":\"${SUBJECT}\",
+                \"datacontenttype\":\"application/json\",
+                \"sxsource\":\"eds\",
+                \"data\":{
+                  \"content\":\"${BASE64_CONTENT}\",
+                  \"type\":\"${CONTENT_TYPE}\"
+                }
+              }")
+
+            STATUS=${RESPONSE: -3}
+            echo "Status: $STATUS subject=$SUBJECT"
+          }
+
+          PATH_INPUT="${{ steps.vars.outputs.path }}"
+          STREAMX_KEY="${{ steps.vars.outputs.streamx_key }}"
+          PAGE_URL="${EDS_DOMAIN}${{ steps.vars.outputs.page_path }}"
+          PLAIN_URL="${EDS_DOMAIN}${STREAMX_KEY}.plain.html"
+          RESOURCE_URL="${EDS_DOMAIN}${PATH_INPUT}"
+
+          if [[ "$PATH_INPUT" == *.md ]]; then
+            BASE64_CONTENT=$(curl -fsSL "$PAGE_URL" | base64 | tr -d '\n')
+            publish "$STREAMX_KEY" "$BASE64_CONTENT" "com.streamx.blueprints.page.published.v1" "page/eds"
+
+            if [[ "$STREAMX_KEY" == *nav ]] || [[ "$STREAMX_KEY" == *footer ]]; then
+              BASE64_CONTENT=$(curl -fsSL "$PLAIN_URL" | base64 | tr -d '\n')
+              publish "${STREAMX_KEY}.plain.html" "$BASE64_CONTENT" "com.streamx.blueprints.web-resource.published.v1" "web-resource/static"
+            fi
+          fi
+
+          if [[ "$PATH_INPUT" == *.json ]]; then
+            BASE64_CONTENT=$(curl -fsSL "$RESOURCE_URL" | base64 | tr -d '\n')
+            publish "/$PATH_INPUT" "$BASE64_CONTENT" "com.streamx.blueprints.web-resource.published.v1" "web-resource/static"
+          fi
