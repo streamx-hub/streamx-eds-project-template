@@ -71,16 +71,13 @@ jobs:
           RESOURCE_URL="${EDS_DOMAIN}${PATH_INPUT}"
 
           if [[ "$PATH_INPUT" == *.md ]]; then
-            BASE64_CONTENT=$(curl -fsSL "$PAGE_URL" | base64 | tr -d '\n')
-            publish "$STREAMX_KEY" "$BASE64_CONTENT" "com.streamx.blueprints.page.unpublished.v1" "page/eds"
+            publish "$STREAMX_KEY" "" "com.streamx.blueprints.page.unpublished.v1" "page/eds"
 
             if [[ "$STREAMX_KEY" == *nav ]] || [[ "$STREAMX_KEY" == *footer ]]; then
-              BASE64_CONTENT=$(curl -fsSL "$PLAIN_URL" | base64 | tr -d '\n')
-              publish "${STREAMX_KEY}.plain.html" "$BASE64_CONTENT" "com.streamx.blueprints.web-resource.unpublished.v1" "web-resource/static"
+              publish "${STREAMX_KEY}.plain.html" "" "com.streamx.blueprints.web-resource.unpublished.v1" "web-resource/static"
             fi
           fi
 
           if [[ "$PATH_INPUT" == *.json ]]; then
-            BASE64_CONTENT=$(curl -fsSL "$RESOURCE_URL" | base64 | tr -d '\n')
-            publish "/$PATH_INPUT" "$BASE64_CONTENT" "com.streamx.blueprints.web-resource.unpublished.v1" "web-resource/static"
+            publish "/$PATH_INPUT" "" "com.streamx.blueprints.web-resource.unpublished.v1" "web-resource/static"
           fi
