@@ -191,7 +191,7 @@ processing:
             ref: inbox.assets
         outgoing:
           relayed-events:
-            ref: outbox.assets
+            ref: relay.assets
 
   downloaded-assets-relay:
     descriptor: relay
