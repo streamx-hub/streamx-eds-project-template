@@ -60,14 +60,18 @@ descriptors:
     volumes:
       opensearch-data:
         size: 10Gi
+        persistent: true
       rocksdb:
         size: 5Gi
+        persistent: true
     containers:
       sink:
         image: ghcr.io/streamx-com/streamx-blueprints/opensearch-sink:3.0.11-native
         incoming:
-          indexable-resources: {}
-          indexable-resource-fragments: {}
+          indexable-resources:
+            initState: delta
+          indexable-resource-fragments:
+            initState: delta
         autoRef:
           - from: indexable-resource-fragments
             to: indexable-resource-fragments-state
@@ -96,11 +100,13 @@ descriptors:
     volumes:
       repository-volume:
         size: 10Gi
+        persistent: true
     containers:
       sink:
         image: ghcr.io/streamx-com/streamx-blueprints/web-server-sink:3.0.11-native
         incoming:
-          resources: {}
+          resources:
+            initState: delta
         servicePorts:
           - 8083:8080
         volumes:
