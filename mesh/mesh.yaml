@@ -204,6 +204,28 @@ processing:
           relayed-events:
             ref: outbox.assets
 
+  pages-relay:
+    descriptor: relay
+    containers:
+      service:
+        incoming:
+          events:
+            ref: inbox.pages
+        outgoing:
+          relayed-events:
+            ref: relay.pages
+
+  downloaded-pages-relay:
+    descriptor: relay
+    containers:
+      service:
+        incoming:
+          events:
+            ref: relay.pages
+        outgoing:
+          relayed-events:
+            ref: outbox.pages
+
 
   download-requests-relay:
     descriptor: relay
@@ -257,7 +279,7 @@ processing:
             ref: relay.download-requests
         outgoing:
           downloaded-pages:
-            ref: inbox.pages
+            ref: relay.pages
           downloaded-assets:
             ref: relay.assets
           downloaded-web-resources:
