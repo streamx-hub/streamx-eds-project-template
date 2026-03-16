@@ -36,7 +36,7 @@ jobs:
           action: publish
           source-provider: ExternalSourceProvider
           channel: pages
-          type: 'page/blog'
+          type: 'page/eds'
           external-resource-url: ${{ steps.vars.outputs.eds_page_url }}
           key: ${{ steps.vars.outputs.streamx_key }}
           streamx-ingestion-token: ${{ secrets.STREAMX_INGESTION_EDS_TOKEN }}
