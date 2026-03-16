@@ -314,3 +314,4 @@ edge:
         volumesFrom:
           configs:
             - nginx_conf/demo.conf:/etc/nginx/conf.d/default.conf
+            - nginx_conf/includes/compression.conf:/etc/nginx/conf.d/includes/compression.conf
