@@ -10,7 +10,7 @@ defaults:
     replicas: 1
     stateful: true
   edge:
-    replicas: 1
+    replicas: 2
     stateful: true
 
 edge:
