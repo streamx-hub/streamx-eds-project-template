@@ -71,8 +71,10 @@ jobs:
           RESOURCE_URL="${EDS_DOMAIN}${PATH_INPUT}"
 
           if [[ "$PATH_INPUT" == *.md ]]; then
-            BASE64_CONTENT=$(curl -fsSL "$PAGE_URL" | base64 | tr -d '\n')
-            publish "$STREAMX_KEY" "$BASE64_CONTENT" "com.streamx.blueprints.page.published.v1" "page/eds"
+            if [[ "$STREAMX_KEY" != *nav && "$STREAMX_KEY" != *footer ]]; then
+              BASE64_CONTENT=$(curl -fsSL "$PAGE_URL" | base64 | tr -d '\n')
+              publish "$STREAMX_KEY" "$BASE64_CONTENT" "com.streamx.blueprints.page.published.v1" "page/eds"
+            fi
 
             if [[ "$STREAMX_KEY" == *nav ]] || [[ "$STREAMX_KEY" == *footer ]]; then
               BASE64_CONTENT=$(curl -fsSL "$PLAIN_URL" | base64 | tr -d '\n')
