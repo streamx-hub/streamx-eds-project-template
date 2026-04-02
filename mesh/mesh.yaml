@@ -19,7 +19,7 @@ descriptors:
     type: processing
     containers:
       processor:
-        image: ghcr.io/streamx-com/streamx-blueprints/external-references-rewriter:3.0.11-native
+        image: ghcr.io/streamx-com/streamx-blueprints/external-references-rewriter:3.0.16-native
         incoming:
           incoming-resources: {}
         outgoing:
@@ -33,7 +33,7 @@ descriptors:
         size: 5Gi
     containers:
       processor:
-        image: ghcr.io/streamx-com/streamx-blueprints/resource-downloader:3.0.11-native
+        image: ghcr.io/streamx-com/streamx-blueprints/resource-downloader:3.0.16-native
         incoming:
           download-requests: {}
         outgoing:
@@ -47,7 +47,7 @@ descriptors:
     type: processing
     containers:
       processor:
-        image: ghcr.io/streamx-com/streamx-blueprints/indexable-resources-producer:3.0.11-native
+        image: ghcr.io/streamx-com/streamx-blueprints/indexable-resources-producer:3.0.16-native
         incoming:
           pages: {}
           fragments: {}
@@ -66,7 +66,7 @@ descriptors:
         persistent: true
     containers:
       sink:
-        image: ghcr.io/streamx-com/streamx-blueprints/opensearch-sink:3.0.11-native
+        image: ghcr.io/streamx-com/streamx-blueprints/opensearch-sink:3.0.16-native
         incoming:
           indexable-resources:
             initState: delta
@@ -82,7 +82,7 @@ descriptors:
           - opensearch-data:/usr/share/opensearch/data
           - rocksdb:/var/lib/rocksdb
         environment:
-          QUARKUS_ELASTICSEARCH_HOSTS: ${STREAMX_OWNER_SERVICE_NAME}.opensearch:9201
+          QUARKUS_ELASTICSEARCH_HOSTS: ${STREAMX_SERVICE_ID}.opensearch:9201
       opensearch:
         image: registry.streamx.cloud/streamx-docker-hub-public-proxy/opensearchproject/opensearch:2.16.0
         servicePorts:
@@ -103,7 +103,7 @@ descriptors:
         persistent: true
     containers:
       sink:
-        image: ghcr.io/streamx-com/streamx-blueprints/web-server-sink:3.0.11-native
+        image: ghcr.io/streamx-com/streamx-blueprints/web-server-sink:3.0.16-native
         incoming:
           resources:
             initState: delta
